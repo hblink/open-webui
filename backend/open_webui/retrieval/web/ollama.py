@@ -25,7 +25,16 @@ def search_ollama_cloud(
     """
     log.info(f'Searching with Ollama for query: {query}')
 
-    headers = {'Authorization': f'Bearer {api_key}', 'Content-Type': 'application/json'}
+    if not api_key:
+        raise ValueError(
+            'Ollama Cloud web search API key is not set. '
+            'Please configure OLLAMA_CLOUD_API_KEY in your environment or set it in Admin > Settings > Web Search.'
+        )
+
+    headers = {
+        'Content-Type': 'application/json',
+        **({'Authorization': f'Bearer {api_key}'} if api_key else {}),
+    }
     payload = {'query': query, 'max_results': count}
 
     try:
